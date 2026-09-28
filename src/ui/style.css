@@ -1,0 +1,140 @@
+/* Mano Lesta — интерфейс. Яркий, стилизованный, читаемый на телефоне и ПК. */
+:root {
+  --bg: #1c1230;
+  --panel: rgba(28, 18, 48, 0.92);
+  --panel2: rgba(44, 30, 72, 0.95);
+  --gold: #f4c94a;
+  --green: #3fae5a;
+  --red: #ff3b30;
+  --amber: #ffcc33;
+  --sea: #2e6f8e;
+  --ink: #f6efe0;
+  --muted: #b9a9d0;
+  --shadow: 0 10px 40px rgba(0,0,0,0.45);
+  --italia1: #009246; --italia2: #ce2b37;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--ink);
+  font-family: 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif; user-select: none; }
+#game-root { position: fixed; inset: 0; }
+#scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#ui-root { position: absolute; inset: 0; pointer-events: none; }
+#ui-root > * { pointer-events: auto; }
+
+/* ---------- Общие панели / кнопки ---------- */
+.screen { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 18px; padding: 24px; text-align: center; }
+.screen.scroll { justify-content: flex-start; overflow-y: auto; }
+.veil { position: absolute; inset: 0; background: radial-gradient(120% 120% at 50% 0%, #2a1a4a 0%, #140c26 70%); }
+.veil.map { background: linear-gradient(160deg, #12324a 0%, #0d1f33 60%, #0a1526 100%); }
+.card { position: relative; background: var(--panel); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px; padding: 22px; box-shadow: var(--shadow); max-width: 560px; width: 100%; }
+.title { font-size: clamp(38px, 9vw, 76px); font-weight: 900; letter-spacing: 3px; margin: 0;
+  background: linear-gradient(180deg, #fff 0%, var(--gold) 60%, #d89a2a 100%); -webkit-background-clip: text;
+  background-clip: text; color: transparent; text-shadow: 0 4px 18px rgba(0,0,0,0.4); }
+.tricolor { height: 6px; width: 160px; margin: 6px auto 0; border-radius: 4px;
+  background: linear-gradient(90deg, var(--italia1) 0 33%, #f2f2f2 33% 66%, var(--italia2) 66% 100%); }
+.tagline { color: var(--muted); font-style: italic; margin: 4px 0 0; letter-spacing: 1px; }
+.btn { pointer-events: auto; border: none; border-radius: 14px; padding: 14px 22px; font-size: 18px; font-weight: 800;
+  cursor: pointer; color: #1a1020; background: linear-gradient(180deg, #ffe08a, var(--gold)); box-shadow: 0 6px 0 #b7891f, var(--shadow);
+  transition: transform .05s ease; letter-spacing: .5px; }
+.btn:active { transform: translateY(3px); box-shadow: 0 3px 0 #b7891f; }
+.btn.sec { background: linear-gradient(180deg, #5b4a80, #3a2c5a); color: var(--ink); box-shadow: 0 6px 0 #241a3c, var(--shadow); }
+.btn.sec:active { box-shadow: 0 3px 0 #241a3c; }
+.btn.big { font-size: 22px; padding: 18px 34px; }
+.btn:disabled { filter: grayscale(.8) brightness(.7); cursor: not-allowed; box-shadow: none; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.menu-btns { display: flex; flex-direction: column; gap: 12px; width: min(320px, 86vw); }
+h2 { margin: 0 0 6px; font-size: 26px; }
+.muted { color: var(--muted); }
+.close-x { position: absolute; top: 12px; right: 14px; background: none; border: none; color: var(--muted); font-size: 26px; cursor: pointer; }
+
+/* ---------- HUD ---------- */
+#hud { position: absolute; inset: 0; pointer-events: none; font-weight: 700; }
+.hud-top { position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 10px 12px; gap: 8px; }
+.chip { background: var(--panel); border-radius: 12px; padding: 8px 12px; box-shadow: var(--shadow); font-size: 15px;
+  display: flex; align-items: center; gap: 6px; }
+.chip small { color: var(--muted); font-weight: 600; }
+.obj { flex: 1; text-align: center; }
+.obj .done { color: var(--green); }
+.alert-meter { position: absolute; top: 52px; left: 50%; transform: translateX(-50%); width: 200px; height: 10px;
+  background: rgba(0,0,0,.4); border-radius: 6px; overflow: hidden; opacity: 0; transition: opacity .2s; }
+.alert-meter.show { opacity: 1; }
+.alert-meter i { display: block; height: 100%; width: 0%; background: var(--amber); transition: width .1s linear; }
+.prompt { position: absolute; bottom: 96px; left: 50%; transform: translateX(-50%); background: var(--panel2);
+  padding: 10px 18px; border-radius: 14px; box-shadow: var(--shadow); font-size: 17px; opacity: 0; transition: opacity .12s; white-space: nowrap; }
+.prompt.show { opacity: 1; }
+.prompt.locked { color: var(--amber); }
+.lockbar { position: absolute; bottom: 140px; left: 50%; transform: translateX(-50%); width: 180px; height: 12px;
+  background: rgba(0,0,0,.5); border-radius: 8px; overflow: hidden; display: none; }
+.lockbar.show { display: block; }
+.lockbar i { display: block; height: 100%; background: var(--gold); width: 0; }
+.chase-vig { position: absolute; inset: 0; box-shadow: inset 0 0 160px 40px rgba(255,59,48,.0); transition: box-shadow .25s; pointer-events: none; }
+.chase-vig.on { box-shadow: inset 0 0 160px 50px rgba(255,59,48,.55); }
+.toast { position: absolute; bottom: 180px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,.72);
+  padding: 8px 16px; border-radius: 10px; font-size: 15px; opacity: 0; transition: opacity .2s; }
+.toast.show { opacity: 1; }
+.emote { position: absolute; font-size: 30px; opacity: 0; }
+.pause-btn { position: absolute; top: 10px; right: 12px; }
+
+/* ---------- Карта кампании ---------- */
+.map-wrap { position: relative; width: min(430px, 80vw); aspect-ratio: 100/125; max-height: 62vh; margin: 4px auto; }
+.italy { position: absolute; inset: 0; }
+.region-pin { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center;
+  cursor: pointer; pointer-events: auto; }
+.region-pin .dot { width: 34px; height: 34px; border-radius: 50%; border: 3px solid #fff; box-shadow: var(--shadow);
+  display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.region-pin .lbl { margin-top: 4px; font-size: 13px; background: rgba(0,0,0,.55); padding: 2px 8px; border-radius: 8px; }
+.region-pin.locked { filter: grayscale(1) brightness(.7); }
+.region-pin .stars { font-size: 11px; color: var(--gold); }
+
+/* Список уровней региона */
+.level-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; width: 100%; }
+.lvl { background: var(--panel2); border-radius: 14px; padding: 12px; text-align: left; cursor: pointer; position: relative;
+  border: 1px solid rgba(255,255,255,.06); }
+.lvl:active { transform: scale(.98); }
+.lvl .n { font-size: 13px; color: var(--muted); }
+.lvl .t { font-size: 15px; font-weight: 800; margin: 2px 0 6px; }
+.lvl .type { font-size: 11px; color: var(--muted); }
+.lvl .st { color: var(--gold); font-size: 14px; letter-spacing: 1px; }
+.lvl.locked { filter: grayscale(.7) brightness(.65); cursor: not-allowed; }
+.lvl .lock { position: absolute; top: 10px; right: 12px; }
+
+/* ---------- Результаты ---------- */
+.stars-big { font-size: 54px; letter-spacing: 6px; }
+.star-on { color: var(--gold); text-shadow: 0 0 18px rgba(244,201,74,.8); }
+.star-off { color: rgba(255,255,255,.18); }
+.stat-line { display: flex; justify-content: space-between; padding: 6px 2px; border-bottom: 1px dashed rgba(255,255,255,.1); }
+.chal-line { display:flex; justify-content: space-between; font-size: 14px; padding: 3px 0; }
+.chal-line .ok { color: var(--green); } .chal-line .no { color: var(--muted); }
+
+/* ---------- Магазин / персонаж ---------- */
+.shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap: 12px; width: 100%; }
+.shop-item { background: var(--panel2); border-radius: 14px; padding: 12px; text-align: left; }
+.shop-item h3 { margin: 0 0 4px; font-size: 15px; }
+.shop-item p { margin: 0 0 8px; font-size: 12px; color: var(--muted); min-height: 32px; }
+.upg-bar { display: flex; gap: 3px; margin: 6px 0; }
+.upg-bar span { flex: 1; height: 8px; border-radius: 3px; background: rgba(255,255,255,.12); }
+.upg-bar span.on { background: var(--gold); }
+.owned { color: var(--green); font-size: 13px; font-weight: 800; }
+.equipped { outline: 2px solid var(--gold); }
+
+/* ---------- Сенсорное управление ---------- */
+#touch-root { position: absolute; inset: 0; pointer-events: none; display: none; }
+#touch-root.show { display: block; }
+.joy { position: absolute; width: 120px; height: 120px; margin-left: -60px; margin-top: -60px;
+  border-radius: 50%; background: rgba(255,255,255,.08); border: 2px solid rgba(255,255,255,.18); opacity: 0; pointer-events: none; }
+.joy.active { opacity: 1; }
+.joy-nub { position: absolute; left: 35px; top: 35px; width: 50px; height: 50px; border-radius: 50%;
+  background: rgba(255,255,255,.35); }
+.touch-btns { position: absolute; right: 20px; bottom: 30px; display: flex; flex-direction: column; gap: 14px; pointer-events: auto; }
+.tbtn { width: 68px; height: 68px; border-radius: 50%; border: none; font-size: 26px; background: var(--panel2);
+  box-shadow: var(--shadow); color: #fff; }
+.tbtn:active { transform: scale(.94); }
+
+.hint-keys { font-size: 13px; color: var(--muted); margin-top: 8px; }
+.badge { display:inline-block; background: var(--sea); color:#fff; border-radius: 8px; padding: 2px 8px; font-size: 12px; }
+.fade-in { animation: fade .3s ease; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (max-width: 520px) { .title { letter-spacing: 1px; } .card { padding: 16px; } }
